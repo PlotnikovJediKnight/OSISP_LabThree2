@@ -8,7 +8,11 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 {
     switch (ul_reason_for_call)
     {
-    case DLL_PROCESS_ATTACH:
+    case DLL_PROCESS_ATTACH: {
+        DynamicLibraryInjection::Injection inj("Hello there! Try replacing me if you can!", "HaHaHaHa!!!! You have just been replaced!");
+        inj.DoReplacement();
+        break;
+    }
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
     case DLL_PROCESS_DETACH:
