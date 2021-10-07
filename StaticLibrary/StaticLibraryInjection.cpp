@@ -100,5 +100,6 @@ namespace StaticLibraryInjection {
 		replacement_ = move(strings.second);
 		if (be_replaced_.size() != replacement_.size()) throw runtime_error("Strings must have equal length!");
 		if (be_replaced_.empty() || replacement_.empty()) throw runtime_error("Strings must not be empty!");
+		return *this;
 	}
 }

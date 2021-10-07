@@ -1,7 +1,8 @@
 #include "pch.h"
 using namespace std;
 
-namespace StaticLibraryInjection {
+namespace DynamicLibraryInjection {
+
 	Injection::Injection(string be_replaced, string replacement) : be_replaced_(move(be_replaced)), replacement_(move(replacement)) {
 		if (be_replaced_.size() != replacement_.size()) throw runtime_error("Strings must have equal length!");
 		if (be_replaced_.empty() || replacement_.empty()) throw runtime_error("Strings must not be empty!");
@@ -100,5 +101,11 @@ namespace StaticLibraryInjection {
 		replacement_ = move(strings.second);
 		if (be_replaced_.size() != replacement_.size()) throw runtime_error("Strings must have equal length!");
 		if (be_replaced_.empty() || replacement_.empty()) throw runtime_error("Strings must not be empty!");
+		return *this;
 	}
+}
+
+
+DECLSPEC DynamicLibraryInjection::IInjection * APIENTRY GetInjection(const char* be_replaced, const char* replacement) {
+	return new DynamicLibraryInjection::Injection(string(be_replaced), string(replacement));
 }

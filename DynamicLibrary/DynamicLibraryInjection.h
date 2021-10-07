@@ -13,21 +13,36 @@
 
 //#define FILE_OUTPUT_DEBUG 
 
-namespace StaticLibraryInjection {
+#ifdef _EXPORTING
+#define DECLSPEC    __declspec(dllexport)
+#else
+#define DECLSPEC    __declspec(dllimport)
+#endif
 
-	class Injection {
+namespace DynamicLibraryInjection {
+
+	class IInjection {
+	public:
+		virtual const IInjection& operator=(std::pair<std::string, std::string> strings) = 0;
+		virtual bool DoReplacement() = 0;
+	private:
+		virtual bool TryReplacing(char* start_pointer, const std::vector<char>& chars, size_t offset) = 0;
+	};
+
+
+	class Injection : public IInjection {
 	public:
 		Injection(std::string be_replaced, std::string replacement);
 
-		const Injection& operator=(std::pair<std::string, std::string> strings);
+		virtual const Injection& operator=(std::pair<std::string, std::string> strings) override;
 
 		Injection(Injection&) = delete;
 		Injection(Injection&&) = delete;
 		Injection& operator=(Injection&) = delete;
 		Injection& operator=(Injection&&) = delete;
-		bool DoReplacement();
+		virtual bool DoReplacement() override;
 	private:
-		bool TryReplacing(char* start_pointer, const std::vector<char>& chars, size_t offset);
+		virtual bool TryReplacing(char* start_pointer, const std::vector<char>& chars, size_t offset) override;
 		std::string be_replaced_;
 		std::string replacement_;
 		DWORD page_size_;
@@ -62,3 +77,5 @@ namespace StaticLibraryInjection {
 		MEMORY_BASIC_INFORMATION info;
 	};
 }
+
+extern "C" DECLSPEC DynamicLibraryInjection::IInjection * APIENTRY GetInjection(const char* be_replaced, const char* replacement);
